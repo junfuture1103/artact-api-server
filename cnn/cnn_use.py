@@ -1,4 +1,5 @@
 import os
+import sys
 import matplotlib.pyplot as plt
 import torch
 import torch.nn as nn
@@ -9,14 +10,17 @@ from CNN import CNN  # Import your CNN model from the 'CNN' module (if not alrea
 from CNN import DEVICE, train, evaluate
 
 # 모델 클래스 레이블 설정
-class_labels = ["art1", "art2", "art3"]
+class_labels = ["detail1","detail2","detail3","detail4","detail5","detail6","detail7","detail8","detail9","detail10","detail11","detail12"]
 
 model = CNN().to(DEVICE)
-model.load_state_dict(torch.load('./model/model.pth'))
+model.load_state_dict(torch.load('../../../artact-api-server/cnn/model/model.pth'))
 model.eval()
 
 # 이미지를 읽어옵니다. 이미지 파일 경로를 지정해야 합니다.
-image_path = './test3.jpg'  # 이미지 파일 경로를 적절히 지정하세요.
+image_path = 'uploads/'+sys.argv[1]  # 이미지 파일 경로를 적절히 지정하세요.
+# image_path = 'uploads/test2.jpg'
+# image_path = 'uploads/1698705997054-photo.jpg'
+print("image_path: ",image_path)
 image = Image.open(image_path)
 
 # 이미지 변환을 정의합니다. 모델을 훈련할 때와 동일한 변환을 사용해야 합니다.
@@ -41,4 +45,13 @@ predicted_class_index = torch.argmax(output, dim=1).item()
 predicted_class = class_labels[predicted_class_index]
 
 # 예측 결과 출력
-print(f"Predicted class: {predicted_class}")
+print(f"resultURL:{predicted_class}")
+
+# 이미지를 삭제
+if os.path.exists(image_path):
+    os.remove(image_path)
+    print(f"이미지 삭제: {image_path}")
+else:
+    print(f"이미지를 찾을 수 없음: {image_path}")
+    
+sys.exit(0)
